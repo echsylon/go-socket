@@ -140,7 +140,7 @@ func getInputSignature(socketFile string, inputFile string, signatureFile string
 		return errors.Join(ErrSockRead, err)
 	}
 
-	// ...and show it to the user.
+	// ...and write it to the given file.
 	err = os.WriteFile(signatureFile, buffer[:count], 0644)
 	if err != nil {
 		fmt.Printf("Couldn't save signature to %s: %s \n", signatureFile, err)
