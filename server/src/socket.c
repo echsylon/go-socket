@@ -49,7 +49,7 @@ int open_socket(const char* path) {
     sock = socket(AF_UNIX, SOCK_STREAM, 0);
     if (sock < 0)
     {
-        printf("Error opening public key socket, leaving \n");
+        printf("Error opening socket at %s, leaving \n", path);
         return -1;
     }
 
@@ -57,11 +57,11 @@ int open_socket(const char* path) {
     strcpy(server.sun_path, path);
     if (bind(sock, (struct sockaddr *) &server, sizeof(struct sockaddr_un)))
     {
-        printf("Error binding to public key socket, leaving \n");
+        printf("Error binding to socket at %s, leaving \n", path);
         return -1;
     }
 
-    printf("Successfully opened %s, observing connections... \n", path);
+    printf("Successfully opened socket at %s \n", path);
     listen(sock, MAX_CLIENTS);
 
     return sock;
@@ -84,10 +84,7 @@ int serve_public_key(const char* socket_path, const char* key_file)
 
     sock = open_socket(socket_path);
     if (sock == -1)
-    {
-        printf("Error opening socket, aborting");
         return -1;
-    }
 
     key = malloc(MAX_KEY_LENGTH);
     if (!get_public_key(key_file, key, &key_len))
@@ -140,10 +137,7 @@ int serve_signing_service(const char* socket_path, const char* key_file)
 
     sock = open_socket(socket_path);
     if (sock == -1)
-    {
-        printf("Error opening socket, aborting");
         return -1;
-    }
 
     msg_len = MAX_MESSAGE_LENGTH;
     msg = malloc(MAX_MESSAGE_LENGTH);
